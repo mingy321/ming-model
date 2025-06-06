@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Settings</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background-color: #f8fafc;
+    }
+
+    .sidebar {
+      width: 250px;
+      height: 100vh;
+      position: fixed;
+      background-color: #1e293b;
+      color: white;
+      padding-top: 1rem;
+    }
+
+    .sidebar h2 {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .sidebar a {
+      display: block;
+      padding: 1rem 2rem;
+      color: white;
+      text-decoration: none;
+      transition: background 0.3s;
+    }
+
+    .sidebar a:hover,
+    .sidebar a.active {
+      background-color: #334155;
+      color: #60a5fa;
+    }
+
+    .main {
+      margin-left: 250px;
+      padding: 2rem;
+    }
+
+    .tabs {
+      display: flex;
+      border-bottom: 1px solid #ccc;
+      margin-bottom: 1rem;
+    }
+
+    .tab {
+      padding: 1rem;
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+    }
+
+    .tab.active {
+      border-color: #2563eb;
+      font-weight: bold;
+      color: #2563eb;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    input {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 1rem;
+    }
+
+    .btn {
+      padding: 0.75rem 1.5rem;
+      background-color: #2563eb;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    .content-section {
+      display: none;
+    }
+
+    .content-section.active {
+      display: block;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      margin-bottom: 2rem;
+    }
+
+    th, td {
+      padding: 1rem;
+      text-align: left;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    th {
+      background-color: #1e40af;
+      color: white;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f1f5f9;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="sidebar">
+    <h2><i class="fas fa-chart-line"></i> Dashboard Pro</h2>
+    <a href="dashboard.html"><i class="fas fa-home"></i> Dashboard</a>
+    <a href="analytics.html"><i class="fas fa-chart-bar"></i> Analytics</a>
+    <a href="customers.html"><i class="fas fa-users"></i> Customers</a>
+    <a href="orders.html"><i class="fas fa-shopping-cart"></i> Orders</a>
+    <a href="products.html"><i class="fas fa-box"></i> Products</a>
+    <a href="revenue.html"><i class="fas fa-dollar-sign"></i> Revenue</a>
+    <a href="settings.html" class="active"><i class="fas fa-cog"></i> Settings</a>
+  </div>
+
+  <div class="main">
+    <h1>Settings</h1>
+
+    <div class="tabs">
+      <div class="tab active" onclick="switchTab('profile')">Profile</div>
+      <div class="tab" onclick="switchTab('account')">Account</div>
+      <div class="tab" onclick="switchTab('product')">Product</div>
+      <div class="tab" onclick="switchTab('help')">Help Center</div>
+    </div>
+
+    <!-- Profile Section -->
+    <div id="profile" class="content-section active">
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input type="text" id="username" placeholder="Enter your username"/>
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" placeholder="Enter your email"/>
+      </div>
+
+      <div class="form-group">
+        <label for="company">Company Name</label>
+        <input type="text" id="company" placeholder="Enter company name"/>
+      </div>
+
+      <button class="btn">Update Profile</button>
+    </div>
+
+    <!-- Account Section -->
+    <div id="account" class="content-section">
+      <div class="form-group">
+        <label for="name-box">Your Name</label>
+        <input type="text" id="name-box" placeholder="Enter your name">
+      </div>
+      <h2>Order History</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Type of Model</th>
+            <th>Customer Name</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>DCF</td><td>Matthew Smith</td><td>Completed</td></tr>
+          <tr><td>DCF</td><td>Paul Collins</td><td>In Progress</td></tr>
+          <tr><td>DCF</td><td>Steven Hamilton</td><td>Completed</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Product Section -->
+    <div id="product" class="content-section">
+      <h2>Purchased DCF Models</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Customer Name</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Matthew Smith</td>
+            <td>Purchased</td>
+            <td><button class="btn" onclick="alert('Refund requested for Matthew Smith')">Request Refund</button></td>
+          </tr>
+          <tr>
+            <td>Emily Johnson</td>
+            <td>Purchased</td>
+            <td><button class="btn" onclick="alert('Refund requested for Emily Johnson')">Request Refund</button></td>
+          </tr>
+          <tr>
+            <td>Steven Hamilton</td>
+            <td>Purchased</td>
+            <td><button class="btn" onclick="alert('Refund requested for Steven Hamilton')">Request Refund</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Help Center Section -->
+    <div id="help" class="content-section">
+      <p>Help Center placeholder...</p>
+    </div>
+  </div>
+
+  <script>
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+      document.querySelectorAll('.content-section').forEach(section => section.classList.remove('active'));
+
+      document.querySelector('.tab[onclick="switchTab(\'' + tabId + '\')"]').classList.add('active');
+      document.getElementById(tabId).classList.add('active');
+    }
+  </script>
+
+</body>
+</html>

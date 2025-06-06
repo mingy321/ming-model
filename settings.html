@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Settings</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background-color: #f8fafc;
+      display: flex;
+    }
+
+    .sidebar {
+      width: 250px;
+      height: 100vh;
+      background-color: #1e293b;
+      color: white;
+      padding-top: 1rem;
+      position: fixed;
+      left: 0;
+      top: 0;
+    }
+
+    .sidebar-header {
+      padding: 1.5rem;
+      font-weight: bold;
+      font-size: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .sidebar-nav {
+      margin-top: 2rem;
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      padding: 0.75rem 1.5rem;
+      color: rgba(255, 255, 255, 0.8);
+      text-decoration: none;
+      transition: all 0.3s ease;
+      gap: 0.75rem;
+    }
+
+    .nav-link:hover,
+    .nav-link.active {
+      background-color: rgba(255, 255, 255, 0.1);
+      color: white;
+    }
+
+    .main {
+      margin-left: 250px;
+      padding: 2rem;
+      width: 100%;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 1rem;
+      border-bottom: 1px solid #e5e7eb;
+      margin-bottom: 2rem;
+    }
+
+    .tab {
+      padding: 1rem;
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      font-weight: 500;
+    }
+
+    .tab.active {
+      border-color: #2563eb;
+      color: #2563eb;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    input {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 1rem;
+    }
+
+    .btn {
+      padding: 0.75rem 1.5rem;
+      background-color: #2563eb;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <i class="fas fa-chart-line"></i> Dashboard Pro
+    </div>
+    <nav class="sidebar-nav">
+      <a href="dashboard.html" class="nav-link"><i class="fas fa-home"></i> Dashboard</a>
+      <a href="analytics.html" class="nav-link"><i class="fas fa-chart-bar"></i> Analytics</a>
+      <a href="customers.html" class="nav-link"><i class="fas fa-users"></i> Customers</a>
+      <a href="orders.html" class="nav-link"><i class="fas fa-shopping-cart"></i> Orders</a>
+      <a href="products.html" class="nav-link"><i class="fas fa-box"></i> Products</a>
+      <a href="dcf_calculator.html" class="nav-link"><i class="fas fa-dollar-sign"></i> Revenue</a>
+      <a href="settings.html" class="nav-link active"><i class="fas fa-cog"></i> Settings</a>
+    </nav>
+  </div>
+
+  <!-- Main Settings Content -->
+  <div class="main">
+    <h1>Settings</h1>
+    <div class="tabs">
+      <div class="tab active" onclick="switchTab('profile')">Profile</div>
+      <div class="tab active" onclick="switchTab('account')">Account</div>
+      <div class="tab active" onclick="switchTab('product')">Product</div>
+      <div class="tab" onclick="switchTab('help')">Help Center</div>
+        </div>
+
+    <!-- Profile Content -->
+    <div id="profile" class="tab-content active">
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input type="text" id="username" placeholder="Your username">
+      </div>
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" placeholder="Your email">
+      </div>
+      <div class="form-group">
+        <label for="company">Company Name</label>
+        <input type="text" id="company" placeholder="Company Name">
+      </div>
+      <button class="btn">Update Profile</button>
+    </div>
+
+    <!-- Account Content -->
+    <div id="account" class="tab-content">
+       <div id="account" class="content-section active">
+      <div class="form-group">
+        <label for="fullname">Name</label>
+        <input type="text" id="fullname" placeholder="Enter your name">
+      </div>
+
+      <h3>Order History</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Type of Model</th>
+            <th>Customer Name</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>DCF</td><td>Ming Chik</td><td>Completed</td></tr>
+          <tr><td>DCF</td><td>Wing Chik</td><td>Completed</td></tr>
+          <tr><td>DCF</td><td>Chung Chik</td><td>In Progress</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Product Content -->
+   <div id="product" class="tab-content">
+  <h2>Purchased DCF Models</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Customer Name</th>
+        <th>Status</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Ming Chik</td>
+        <td>Purchased</td>
+        <td><button class="btn" onclick="alert('Refund requested for Ming Chik')">Request Refund</button></td>
+      </tr>
+      <tr>
+        <td>Wing Chik</td>
+        <td>Purchased</td>
+        <td><button class="btn" onclick="alert('Refund requested for Wing Chik')">Request Refund</button></td>
+      </tr>
+      <tr>
+        <td>Chung Chik</td>
+        <td>In Progress</td>
+        <td><button class="btn" onclick="alert('Refund requested for Chung Chik')">Request Refund</button></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+
+    <!-- Help Center Content -->
+    <div id="help" class="tab-content">
+      <p>Help Center FAQs coming soon...</p>
+    </div>
+  </div>
+
+  <script>
+    function switchTab(tabId) {
+      const tabs = document.querySelectorAll('.tab');
+      const contents = document.querySelectorAll('.tab-content');
+
+      tabs.forEach(tab => tab.classList.remove('active'));
+      contents.forEach(c => c.classList.remove('active'));
+
+      document.querySelector(`.tab[onclick="switchTab('${tabId}')"]`).classList.add('active');
+      document.getElementById(tabId).classList.add('active');
+    }
+  </script>
+</body>
+</html>

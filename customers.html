@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Customers</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f8fafc;
+      color: #1e293b;
+    }
+
+    .sidebar {
+      width: 250px;
+      height: 100vh;
+      position: fixed;
+      left: 0;
+      top: 0;
+      background-color: #1e293b;
+      color: white;
+      padding: 1rem;
+    }
+
+    .sidebar h2 {
+      margin-bottom: 2rem;
+    }
+
+    .sidebar a {
+      display: block;
+      color: white;
+      text-decoration: none;
+      margin: 1rem 0;
+    }
+
+    .sidebar a.active {
+      color: #60a5fa;
+      font-weight: bold;
+    }
+
+    .main {
+      margin-left: 250px;
+      padding: 2rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 2rem;
+      background: white;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    th, td {
+      padding: 1rem;
+      text-align: left;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    th {
+      background-color: #1e40af;
+      color: white;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f1f5f9;
+    }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <h2>Dashboard Pro</h2>
+    <a href="dashboard.html"><i class="fas fa-home"></i> Dashboard</a>
+    <a href="analytics.html"><i class="fas fa-chart-bar"></i> Analytics</a>
+    <a href="customers.html" class="active"><i class="fas fa-users"></i> Customers</a>
+    <a href="orders.html"><i class="fas fa-shopping-cart"></i> Orders</a>
+    <a href="products.html"><i class="fas fa-box"></i> Products</a>
+    <a href="dcf_calculator.html"><i class="fas fa-dollar-sign"></i> Revenue</a>
+    <a href="settings.html"><i class="fas fa-cog"></i> Settings</a>
+  </div>
+
+  <div class="main">
+    <h1>Customer Overview</h1>
+    <table>
+      <thead>
+        <tr>
+          <th>First Name</th>
+          <th>Last Name</th>
+          <th>Revenue ($)</th>
+          <th>Company</th>
+          <th>Date of Incorporation</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Ming</td><td>Chik</td><td>1,000,000</td><td>Ming Inc.</td><td>14/04/1974</td></tr>
+        <tr><td>Wing</td><td>Chik</td><td>2,000,000</td><td>Wing Co.</td><td>19/02/1968</td></tr>
+        <tr><td>Chung</td><td>Chik</td><td>1,500,000</td><td>Chung LLC</td><td>03/07/1977</td></tr>
+      </tbody>
+    </table>
+  </div>
+</body>
+</html>

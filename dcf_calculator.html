@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DCF Valuation Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #1a3a5f;
+            --secondary: #0077b6;
+            --accent: #48cae4;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --success: #198754;
+            --warning: #ffc107;
+            --danger: #dc3545;
+            --gray-100: #f8f9fa;
+            --gray-200: #e9ecef;
+            --gray-300: #dee2e6;
+            --gray-400: #ced4da;
+            --gray-500: #adb5bd;
+            --gray-600: #6c757d;
+            --gray-700: #495057;
+            --gray-800: #343a40;
+            --gray-900: #212529;
+            --table-blue: #4a6fa5;
+            --table-light-blue: #6b8bb3;
+            --highlight-yellow: #fff3cd;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--gray-100);
+            color: var(--gray-800);
+            line-height: 1.6;
+        }
+
+        .navbar {
+            background-color: var(--primary);
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .navbar-brand i {
+            margin-right: 0.5rem;
+            color: var(--accent);
+        }
+
+        .navbar-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .navbar-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .navbar-links a:hover {
+            color: var(--accent);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 1200px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--gray-300);
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--gray-700);
+            font-size: 0.9rem;
+        }
+
+        .input-group {
+            display: flex;
+            align-items: center;
+        }
+
+        .input-group-prepend {
+            background-color: var(--gray-200);
+            border: 1px solid var(--gray-400);
+            border-right: none;
+            padding: 0.4rem 0.6rem;
+            border-top-left-radius: 4px;
+            border-bottom-left-radius: 4px;
+            color: var(--gray-700);
+            font-size: 0.9rem;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 0.4rem 0.6rem;
+            border: 1px solid var(--gray-400);
+            border-radius: 4px;
+            font-size: 0.9rem;
+            transition: border-color 0.3s;
+        }
+
+        .input-group input[type="number"] {
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+        }
+
+        input[type="number"]:focus {
+            outline: none;
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 3px rgba(0, 119, 182, 0.1);
+        }
+
+        .btn {
+            display: inline-block;
+            font-weight: 500;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: middle;
+            user-select: none;
+            border: 1px solid transparent;
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            border-radius: 4px;
+            transition: all 0.15s ease-in-out;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            color: white;
+            background-color: var(--secondary);
+            border-color: var(--secondary);
+        }
+
+        .btn-primary:hover {
+            background-color: #005f92;
+            border-color: #005f92;
+        }
+
+        .btn-block {
+            display: block;
+            width: 100%;
+        }
+
+        .btn-sm {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.8rem;
+            border-radius: 3px;
+        }
+
+        .btn-outline-secondary {
+            color: var(--gray-600);
+            border-color: var(--gray-400);
+            background-color: transparent;
+        }
+
+        .btn-outline-secondary:hover {
+            color: var(--gray-800);
+            background-color: var(--gray-200);
+        }
+
+        .presets {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        /* Professional Financial Table Styling */
+        .financial-table-container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+        }
+
+        .financial-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .financial-table thead {
+            background-color: var(--table-blue);
+            color: white;
+        }
+
+        .financial-table thead th {
+            padding: 0.75rem 0.5rem;
+            text-align: center;
+            font-weight: 600;
+            border-right: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .financial-table thead th:first-child {
+            text-align: left;
+            padding-left: 1rem;
+        }
+
+        .financial-table thead th:nth-child(2) {
+            text-align: center;
+            width: 60px;
+        }
+
+        .financial-table tbody tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        .financial-table tbody tr:nth-child(odd) {
+            background-color: white;
+        }
+
+        .financial-table tbody td {
+            padding: 0.5rem;
+            border-right: 1px solid var(--gray-300);
+            text-align: right;
+            font-weight: 500;
+        }
+
+        .financial-table tbody td:first-child {
+            text-align: left;
+            padding-left: 1rem;
+            font-weight: 600;
+            color: var(--gray-800);
+        }
+
+        .financial-table tbody td:nth-child(2) {
+            text-align: center;
+            font-weight: 500;
+            color: var(--gray-600);
+        }
+
+        .financial-table .section-header {
+            background-color: var(--table-light-blue) !important;
+            color: white;
+            font-weight: 700;
+        }
+
+        .financial-table .section-header td {
+            padding: 0.75rem 1rem;
+            text-align: left;
+        }
+
+        .financial-table .subsection {
+            font-style: italic;
+            color: var(--gray-600);
+            padding-left: 2rem !important;
+        }
+
+        .financial-table .highlight {
+            background-color: var(--highlight-yellow) !important;
+        }
+
+        .financial-table .total-row {
+            background-color: var(--table-blue) !important;
+            color: white;
+            font-weight: 700;
+        }
+
+        .financial-table .total-row td {
+            border-top: 2px solid var(--table-blue);
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin-top: 1rem;
+            background-color: white;
+            border-radius: 8px;
+            padding: 1rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .metric-card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .metric-value {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin: 0.5rem 0;
+        }
+
+        .metric-label {
+            font-size: 0.8rem;
+            color: var(--gray-600);
+        }
+
+        .metric-icon {
+            font-size: 1.1rem;
+            color: var(--secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        footer {
+            background-color: var(--gray-800);
+            color: white;
+            text-align: center;
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .assumptions {
+            font-size: 0.8rem;
+            color: var(--gray-600);
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--gray-300);
+        }
+
+        .assumptions-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .assumptions ul {
+            padding-left: 1.5rem;
+        }
+
+        .assumptions li {
+            margin-bottom: 0.25rem;
+        }
+
+        .tooltip-icon {
+            color: var(--secondary);
+            font-size: 0.8rem;
+            cursor: help;
+            margin-left: 0.25rem;
+        }
+
+        .currency {
+            font-family: 'Courier New', monospace;
+        }
+
+        .percentage {
+            color: var(--gray-700);
+        }
+
+        .negative {
+            color: var(--danger);
+        }
+
+        .positive {
+            color: var(--success);
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-brand">
+            <i class="fas fa-chart-line"></i>
+            <span>FinanceValuation Pro</span>
+        </div>
+        <div class="navbar-links">
+            <a href="dashboard.html"><i class="fas fa-home"></i> Dashboard</a>
+            <a href="reports.html"><i class="fas fa-file-alt"></i> Reports</a>
+            <a href="#"><i class="fas fa-cog"></i> Settings</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1>Discounted Cash Flow Valuation Dashboard</h1>
+        <p>Professional DCF analysis tool for business valuation and investment decisions</p>
+
+        <div class="metrics">
+            <div class="metric-card">
+                <div class="metric-icon"><i class="fas fa-dollar-sign"></i></div>
+                <div class="metric-label">Enterprise Value</div>
+                <div class="metric-value" id="enterpriseValueMetric">$0.00</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-icon"><i class="fas fa-chart-line"></i></div>
+                <div class="metric-label">Terminal Value</div>
+                <div class="metric-value" id="terminalValueMetric">$0.00</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-icon"><i class="fas fa-percentage"></i></div>
+                <div class="metric-label">Avg FCF Growth</div>
+                <div class="metric-value" id="avgGrowthMetric">0.00%</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-icon"><i class="fas fa-calculator"></i></div>
+                <div class="metric-label">WACC</div>
+                <div class="metric-value" id="waccMetric">0.00%</div>
+            </div>
+        </div>
+
+        <div class="dashboard">
+            <div class="inputs-section">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">DCF Inputs</h2>
+                    </div>
+                    
+                    <div class="presets">
+                        <button class="btn btn-sm btn-outline-secondary" onclick="loadPreset('startup')">Tech Startup</button>
+                        <button class="btn btn-sm btn-outline-secondary" onclick="loadPreset('mature')">Mature Business</button>
+                        <button class="btn btn-sm btn-outline-secondary" onclick="loadPreset('growth')">Growth Company</button>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="revenue">Initial Revenue (Year 0)</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">$M</div>
+                            <input type="number" id="revenue" value="587.36" step="0.01">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="ebitMargin">EBIT Margin</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">%</div>
+                            <input type="number" id="ebitMargin" value="4.0" step="0.1">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="taxRate">Tax Rate</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">%</div>
+                            <input type="number" id="taxRate" value="32.0" step="0.1">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="depreciationRate">Depreciation Rate</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">%</div>
+                            <input type="number" id="depreciationRate" value="2.0" step="0.1">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="capexRate">CapEx Rate</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">%</div>
+                            <input type="number" id="capexRate" value="2.3" step="0.1">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="workingCapitalRate">Working Capital Change</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">%</div>
+                            <input type="number" id="workingCapitalRate" value="9.0" step="0.1">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="revenueGrowthRates">Revenue Growth Rates (comma-separated)</label>
+                        <input type="text" id="revenueGrowthRates" value="5.0,4.0,4.0,3.0,3.0" style="width: 100%; padding: 0.4rem 0.6rem; border: 1px solid var(--gray-400); border-radius: 4px;">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="discountRate">Discount Rate (WACC)</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">%</div>
+                            <input type="number" id="discountRate" value="10.0" step="0.1">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="terminalGrowthRate">Terminal Growth Rate</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">%</div>
+                            <input type="number" id="terminalGrowthRate" value="2.5" step="0.1">
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary btn-block" onclick="calculateDCF()">Calculate Valuation</button>
+
+                    <div class="assumptions">
+                        <div class="assumptions-title">Key Assumptions:</div>
+                        <ul>
+                            <li>Revenue growth rates decline over time</li>
+                            <li>EBIT margin remains constant</li>
+                            <li>Tax rate applied to EBIT</li>
+                            <li>Terminal value using perpetuity growth model</li>
+                            <li>Working capital as % of revenue change</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="results-section">
+                <div class="financial-table-container">
+                    <table class="financial-table">
+                        <thead>
+                            <tr>
+                                <th>Unlevered Free Cash Flow Projections:</th>
+                                <th>Units:</th>
+                                <th>FY1</th>
+                                <th>FY2</th>
+                                <th>FY3</th>
+                                <th>FY4</th>
+                                <th>FY5</th>
+                                <th style="background-color: rgba(255,255,255,0.2);">Projected:</th>
+                            </tr>
+                        </thead>
+                        <tbody id="financialTableBody">
+                            <!-- Table content will be populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Cash Flow Visualization</h2>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="cashFlowChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Valuation Summary</h2>
+                    </div>
+                    <div class="financial-table-container">
+                        <table class="financial-table">
+                            <tbody id="valuationSummary">
+                                <!-- Valuation summary will be populated by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 FinanceValuation Pro. All rights reserved.</p>
+        <p>A professional DCF valuation tool for financial analysts and business professionals.</p>
+    </footer>
+
+    <script>
+        // Initialize chart
+        let cashFlowChart;
+
+        // Format number as currency in millions
+        function formatCurrency(value, inMillions = true) {
+            const displayValue = inMillions ? value : value * 1000000;
+            return new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD',
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
+            }).format(displayValue);
+        }
+
+        // Format number as percentage
+        function formatPercent(value) {
+            return value.toFixed(1) + '%';
+        }
+
+        // Load preset values
+        function loadPreset(type) {
+            switch(type) {
+                case 'startup':
+                    document.getElementById("revenue").value = "50.0";
+                    document.getElementById("ebitMargin").value = "5.0";
+                    document.getElementById("taxRate").value = "25.0";
+                    document.getElementById("revenueGrowthRates").value = "50.0,40.0,30.0,20.0,15.0";
+                    document.getElementById("discountRate").value = "15.0";
+                    document.getElementById("terminalGrowthRate").value = "3.0";
+                    break;
+                case 'mature':
+                    document.getElementById("revenue").value = "1000.0";
+                    document.getElementById("ebitMargin").value = "15.0";
+                    document.getElementById("taxRate").value = "28.0";
+                    document.getElementById("revenueGrowthRates").value = "3.0,3.0,2.5,2.5,2.0";
+                    document.getElementById("discountRate").value = "8.0";
+                    document.getElementById("terminalGrowthRate").value = "2.0";
+                    break;
+                case 'growth':
+                    document.getElementById("revenue").value = "200.0";
+                    document.getElementById("ebitMargin").value = "8.0";
+                    document.getElementById("taxRate").value = "30.0";
+                    document.getElementById("revenueGrowthRates").value = "25.0,20.0,15.0,12.0,10.0";
+                    document.getElementById("discountRate").value = "12.0";
+                    document.getElementById("terminalGrowthRate").value = "3.0";
+                    break;
+            }
+            calculateDCF();
+        }
+
+        // Calculate DCF valuation
+        function calculateDCF() {
+            // Get input values
+            const revenue = parseFloat(document.getElementById("revenue").value);
+            const ebitMargin = parseFloat(document.getElementById("ebitMargin").value) / 100;
+            const taxRate = parseFloat(document.getElementById("taxRate").value) / 100;
+            const depreciationRate = parseFloat(document.getElementById("depreciationRate").value) / 100;
+            const capexRate = parseFloat(document.getElementById("capexRate").value) / 100;
+            const workingCapitalRate = parseFloat(document.getElementById("workingCapitalRate").value) / 100;
+            const discountRate = parseFloat(document.getElementById("discountRate").value) / 100;
+            const terminalGrowthRate = parseFloat(document.getElementById("terminalGrowthRate").value) / 100;
+            
+            const growthRatesStr = document.getElementById("revenueGrowthRates").value;
+            const growthRates = growthRatesStr.split(',').map(rate => parseFloat(rate.trim()) / 100);
+
+            // Calculate projections
+            let projections = [];
+            let currentRevenue = revenue;
+            
+            for (let i = 0; i < growthRates.length; i++) {
+                currentRevenue = currentRevenue * (1 + growthRates[i]);
+                const ebit = currentRevenue * ebitMargin;
+                const taxes = ebit * taxRate;
+                const nopat = ebit - taxes;
+                const depreciation = currentRevenue * depreciationRate;
+                const capex = currentRevenue * capexRate;
+                const workingCapitalChange = currentRevenue * workingCapitalRate * growthRates[i];
+                const fcf = nopat + depreciation - capex - workingCapitalChange;
+                
+                projections.push({
+                    year: i + 1,
+                    revenue: currentRevenue,
+                    revenueGrowth: growthRates[i],
+                    ebit: ebit,
+                    ebitMargin: ebitMargin,
+                    taxes: taxes,
+                    nopat: nopat,
+                    depreciation: depreciation,
+                    capex: capex,
+                    workingCapitalChange: workingCapitalChange,
+                    fcf: fcf
+                });
+            }
+
+            // Calculate terminal value
+            const finalFCF = projections[projections.length - 1].fcf;
+            const terminalFCF = finalFCF * (1 + terminalGrowthRate);
+            const terminalValue = terminalFCF / (discountRate - terminalGrowthRate);
+            
+            // Calculate present values
+            let totalPV = 0;
+            projections.forEach((proj, index) => {
+                proj.discountFactor = 1 / Math.pow(1 + discountRate, index + 1);
+                proj.presentValue = proj.fcf * proj.discountFactor;
+                totalPV += proj.presentValue;
+            });
+            
+            const terminalValuePV = terminalValue * projections[projections.length - 1].discountFactor;
+            const enterpriseValue = totalPV + terminalValuePV;
+
+            // Update metrics
+            document.getElementById("enterpriseValueMetric").textContent = formatCurrency(enterpriseValue);
+            document.getElementById("terminalValueMetric").textContent = formatCurrency(terminalValue);
+            document.getElementById("waccMetric").textContent = formatPercent(discountRate * 100);
+            
+            const avgGrowth = growthRates.reduce((sum, rate) => sum + rate, 0) / growthRates.length;
+            document.getElementById("avgGrowthMetric").textContent = formatPercent(avgGrowth * 100);
+
+            // Update financial table
+            updateFinancialTable(projections);
+            
+            // Update valuation summary
+            updateValuationSummary(totalPV, terminalValuePV, enterpriseValue);
+            
+            // Update chart
+            updateChart(projections);
+        }
+
+        function updateFinancialTable(projections) {
+            const tbody = document.getElementById("financialTableBody");
+            let html = '';
+
+            // Revenue section
+            html += `
+                <tr class="section-header">
+                    <td colspan="8">Revenue:</td>
+                </tr>
+                <tr>
+                    <td>Net Sales:</td>
+                    <td>$ M</td>
+                    ${projections.map(p => `<td class="currency">${formatCurrency(p.revenue, false).replace('$', '').replace(',', '')}</td>`).join('')}
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="subsection">Revenue Growth:</td>
+                    <td>%</td>
+                    ${projections.map(p => `<td class="percentage">${formatPercent(p.revenueGrowth * 100)}</td>`).join('')}
+                    <td></td>
+                </tr>
+            `;
+
+            // Operating Income section
+            html += `
+                <tr>
+                    <td>Operating Income (EBIT):</td>
+                    <td>$ M</td>
+                    ${projections.map(p => `<td class="currency">${formatCurrency(p.ebit, false).replace('$', '').replace(',', '')}</td>`).join('')}
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="subsection">Operating (EBIT) Margin:</td>
+                    <td>%</td>
+                    ${projections.map(p => `<td class="percentage">${formatPercent(p.ebitMargin * 100)}</td>`).join('')}
+                    <td></td>
+                </tr>
+            `;
+
+            // Taxes section
+            html += `
+                <tr>
+                    <td>(-) Taxes:</td>
+                    <td>$ M</td>
+                    ${projections.map(p => `<td class="currency negative">(${formatCurrency(p.taxes, false).replace('$', '').replace(',', '')})</td>`).join('')}
+                    <td></td>
+                </tr>
+            `;
+
+            // NOPAT section
+            html += `
+                <tr>
+                    <td>Net Operating Profit After Tax (NOPAT):</td>
+                    <td>$ M</td>
+                    ${projections.map(p => `<td class="currency">${formatCurrency(p.nopat, false).replace('$', '').replace(',', '')}</td>`).join('')}
+                    <td></td>
+                </tr>
+            `;
+
+            // Adjustments section
+            html += `
+                <tr class="section-header">
+                    <td colspan="8">Adjustments for Non-Cash Charges:</td>
+                </tr>
+                <tr>
+                    <td>(+) Depreciation & Amortization:</td>
+                    <td>$ M</td>
+                    ${projections.map(p => `<td class="currency">${formatCurrency(p.depreciation, false).replace('$', '').replace(',', '')}</td>`).join('')}
+                    <td></td>
+                </tr>
+                <tr class="highlight">
+                    <td>(+/-) Change in Working Capital:</td>
+                    <td>$ M</td>
+                    ${projections.map(p => `<td class="currency">${formatCurrency(p.workingCapitalChange, false).replace('$', '').replace(',', '')}</td>`).join('')}
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>(-) Capital Expenditures:</td>
+                    <td>$ M</td>
+                    ${projections.map(p => `<td class="currency negative">(${formatCurrency(p.capex, false).replace('$', '').replace(',', '')})</td>`).join('')}
+                    <td></td>
+                </tr>
+            `;
+
+            // Free Cash Flow section
+            html += `
+                <tr class="total-row">
+                    <td>Annual Unlevered Free Cash Flow:</td>
+                    <td>$ M</td>
+                    ${projections.map(p => `<td class="currency">${formatCurrency(p.fcf, false).replace('$', '').replace(',', '')}</td>`).join('')}
+                    <td></td>
+                </tr>
+            `;
+
+            tbody.innerHTML = html;
+        }
+
+        function updateValuationSummary(totalPV, terminalValuePV, enterpriseValue) {
+            const tbody = document.getElementById("valuationSummary");
+            tbody.innerHTML = `
+                <tr>
+                    <td>Sum of PV of Projected Cash Flows</td>
+                    <td>$ M</td>
+                    <td class="currency">${formatCurrency(totalPV, false).replace('$', '').replace(',', '')}</td>
+                </tr>
+                <tr>
+                    <td>Terminal Value (PV)</td>
+                    <td>$ M</td>
+                    <td class="currency">${formatCurrency(terminalValuePV, false).replace('$', '').replace(',', '')}</td>
+                </tr>
+                <tr class="total-row">
+                    <td>Enterprise Value</td>
+                    <td>$ M</td>
+                    <td class="currency">${formatCurrency(enterpriseValue, false).replace('$', '').replace(',', '')}</td>
+                </tr>
+            `;
+        }
+
+        function updateChart(projections) {
+            const ctx = document.getElementById('cashFlowChart').getContext('2d');
+            
+            if (cashFlowChart) {
+                cashFlowChart.destroy();
+            }
+            
+            const labels = projections.map(p => `FY${p.year}`);
+            const fcfData = projections.map(p => p.fcf);
+            const pvData = projections.map(p => p.presentValue);
+            
+            cashFlowChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Free Cash Flow',
+                            data: fcfData,
+                            backgroundColor: 'rgba(74, 111, 165, 0.7)',
+                            borderColor: 'rgba(74, 111, 165, 1)',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'Present Value',
+                            data: pvData,
+                            backgroundColor: 'rgba(107, 139, 179, 0.7)',
+                            borderColor: 'rgba(107, 139, 179, 1)',
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return '$' + value.toFixed(0) + 'M';
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.dataset.label + ': $' + context.raw.toFixed(1) + 'M';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Initialize the calculator with default values
+        //ming's code
+        document.addEventListener('DOMContentLoaded', function() {
+            calculateDCF();
+        });
+    </script>
+</body>
+</html>
